@@ -13,30 +13,48 @@ function App() {
   const [prioridade, setPrioridade] = useState('')
   const [descricao, setDescricao] = useState('')
 
-  function cadastrarChamado(event) {
-    event.preventDefault()
+  async function cadastrarChamado(event) {
+  event.preventDefault()
 
-    if (!titulo || !categoria || !prioridade || !descricao) {
-      alert('Preencha todos os campos.')
-      return
+  if (!titulo || !prioridade || !descricao) {
+    alert('Preencha todos os campos.')
+    return
+  }
+
+  const novoChamado = {
+    titulo: titulo,
+    prioridade: prioridade,
+    status: 'ABERTO',
+    observacoes: descricao,
+  }
+
+  try {
+    const resposta = await fetch('http://localhost:8080/chamados', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(novoChamado),
+    })
+
+    if (!resposta.ok) {
+      throw new Error('Erro ao cadastrar chamado')
     }
 
-    const novoChamado = {
-      id: Date.now(),
-      titulo,
-      categoria,
-      prioridade,
-      descricao,
-      status: 'Aberto',
-    }
+    const chamadoSalvo = await resposta.json()
 
-    setChamados([...chamados, novoChamado])
+    setChamados([...chamados, chamadoSalvo])
 
     setTitulo('')
     setCategoria('')
     setPrioridade('')
     setDescricao('')
     setMostrarFormulario(false)
+
+  } catch (erro) {
+    console.error(erro)
+    alert('Não foi possível cadastrar o chamado.')
+    }
   }
 
   return (
@@ -327,17 +345,11 @@ function App() {
                         Selecione a prioridade
                       </option>
 
-                      <option value="Baixa">
-                        Baixa
-                      </option>
+                      <option value="BAIXA">Baixa</option>
 
-                      <option value="Média">
-                        Média
-                      </option>
+                      <option value="MEDIA">Média</option>
 
-                      <option value="Alta">
-                        Alta
-                      </option>
+                      <option value="ALTA">Alta</option>
 
                     </select>
 

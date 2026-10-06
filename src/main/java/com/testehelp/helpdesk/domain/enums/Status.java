@@ -17,18 +17,18 @@ public enum Status {
     public String getDescricao() {
         return descricao;    
     }
-    @SuppressWarnings("unused")
+   
     public static Status toEnum(Integer codigo) {
-        if(codigo == null) {
-            if(codigo == null) {
-                return null;
-            }
-        for(Status p : Status.values()) {
-            if(codigo.equals(p.getCodigo())) {
-                return p;
-                }
-           }
+        if (codigo == null) {
+        return null;
+    }
+
+    for (Status s : Status.values()) {
+        if (codigo.equals(s.getCodigo())) {
+            return s;
         }
-        throw new IllegalArgumentException("Status Inválido!");
+    }
+
+    throw new IllegalArgumentException("Status Inválido!");
     }
 }
